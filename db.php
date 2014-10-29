@@ -1,0 +1,119 @@
+<?php
+
+require_once("err.php");
+
+class DB { /* Singleton */
+	private static $db_instance = null;
+	private static $jsonConfigFile = "db.json";
+
+	private $host;
+	private $port;
+	private $database;
+	private $login;
+	private $password;
+
+/* CONSTRUCT */
+	/*
+	 * 	NOTE: PRIVATE CONSTRUCT
+	 *	$db = new DB($login, $password, $database, [$host, $port]) 
+	 *
+	*/
+	private function __construct($login, $password, $database, $host = 'localhost', $port = 3306) {
+		$this->host = (string)$host;
+		$this->port = (int)$port;
+		$this->database = (string)$database;
+		$this->login = (string)$login;
+		$this->password = (string)$password;
+	}
+
+	private static function readConfigFromJSON($filename, &$err_buf){
+		if ( ($json = (string)file_get_contents($filename)) !== false ){
+			if ( $config = json_decode($json) ){
+
+				if ( !isset($config->{'host'}) ) 
+					$config->{'host'} = "localhost";
+
+				if ( !isset($config->{'port'}) ) 
+					$config->{'port'} = 3306;
+
+				if ( !isset($config->{'database'}) ) {
+					$err_buf = Err::DB_DATABASE_NOT_SET;
+					user_error( Err::Descr($err_buf) );
+					return null;
+				}
+				elseif ( !isset($config->{'login'}) ) {
+					$err_buf = Err::DB_LOGIN_NOT_SET;
+					user_error( Err::Descr($err_buf) );
+					return null;
+				}
+				elseif ( !isset($config->{'password'}) ) {
+					$err_buf = Err::DB_PASSWORD_NOT_SET;
+					user_error( Err::Descr($err_buf) );
+					return null;
+				}else{
+					if ( self::$db_instance === null ) {
+						self::$db_instance = new DB(
+							$config->{'login'},
+							$config->{'password'},
+							$config->{'database'},
+							$config->{'host'},
+							$config->{'port'}
+						);
+					}
+					return self::$db_instance;
+				}
+			}else{
+				$err_buf = Err::DB_JSON_PARSE_ERR;
+				user_error( Err::Descr($err_buf) );
+				return null;
+			}
+		}else{
+			$err_buf = Err::DB_JSON_READ_ERR;
+			user_error( Err::Descr($err_buf) );
+			return null;
+		}
+	}
+
+	private static function dbInit(&$err_buf){
+		if ( self::$db_instance === null ) {
+			if ( !self::readConfigFromJSON(self::$jsonConfigFile, $err_buf) ){
+				return null;
+			};
+		}
+		return self::$db_instance;
+	}
+
+/* PUBLIC SECTION */
+
+	public static function dbLoginExist($login){
+		if ( self::dbInit( $err_buf ) ){
+			return true;
+		}else{
+			user_error( Err::Descr($err_buf) );
+			return $error;
+		}
+
+	}
+}
+
+if ( ($res = DB::dbLoginExist("testuser")) > 0 ){
+	print "exist\n";
+}else{
+	$error = $res;
+	print "[dbLoginExist] Error: " . Err::Descr($error) . "\n";
+}
+
+/*
+if ( $db2 = DB::readConfigFromJSON("db.json", $err_buf) ){
+	var_dump($db2);
+}else{
+	print "Error: " . Err::Descr($err_buf) . "\n";
+}
+
+if ( $db3 = DB::readConfigFromJSON("db.json", $err_buf) ){                       
+	        var_dump($db3);                                                          
+}else{                                                                           
+	        print "Error: " . Err::Descr($err_buf) . "\n";                           
+}
+ */
+?>
