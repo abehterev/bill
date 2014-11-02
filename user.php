@@ -1,6 +1,7 @@
 <?php
 
 require_once("err.php");
+require_once("db.php");
 
 class LoginSession {
 	private $time;
@@ -28,8 +29,12 @@ class User {
 /* PROTECTED SECTION */
 
 	private static function isLoginFree($login){
-		#return false;
-		return true;
+		if ( ($res = DB::dbLoginExist($login)) >= 0 ){
+			return ! $res;
+		}else{
+			$error = $res;
+			return $error;
+		}
 	}
 
 	private static function isLoginValid($login){
@@ -57,12 +62,17 @@ class User {
 			return $err;
 		}
 
-		if ( self::isLoginFree($login) ) {
+		if ( ($res = self::isLoginFree($login)) > 0 ) {
 			$this->login = $login;
 			return true;
 		}else{
-			$err = Err::LOGIN_CANNOT_CREATE;
-			user_error( Err::Descr($err) );
+			if ($res < 0) {
+				$err = $res;
+				user_error( Err::Descr($err) );
+			}else{
+				$err = Err::USER_LOGIN_CANNOT_CREATE;
+				user_error( Err::Descr($err) );
+			}
 			return $err;
 		}
 	}
@@ -106,5 +116,6 @@ class User {
 		return $instance;
 	}
 }
+
 
 ?>

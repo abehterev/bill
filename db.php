@@ -146,11 +146,10 @@ class DB { /* Singleton */
 				$result->setFetchMode(PDO::FETCH_ASSOC);
 				$find_count = $result->rowCount();
 				if ( $find_count > 0 ) {
-					$id = $result->fetch()['id'];
+					$id = (int)$result->fetch()['id'];
 					return true;
-				}else{
-					return false;
 				}
+				return false;
 			}catch(PDOException $e){
 				$error = Err::DB_PDO_QUERY_ERR;
 				user_error( $e->getMessage() );
@@ -167,14 +166,14 @@ class DB { /* Singleton */
 
 
 /* TEST SECTION */
-
+/*
 if ( ($res = DB::dbLoginExist("testuser", $user_id)) >= 0 ){
 	( $res ) ? print "exist (userid: $user_id)\n" : print "not exist\n";
 }else{
 	$error = $res;
 	print "[dbLoginExist] Error: " . Err::Descr($error) . "\n";
 }
-
+ */
 /*
 if ( $db2 = DB::readConfigFromJSON("db.json", $err_buf) ){
 	var_dump($db2);
