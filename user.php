@@ -108,10 +108,10 @@ class User {
 			if ( ($err_buf = $instance->setPassword($password)) > 0 ){
 				$instance->saveToDb();
 			}else{
-				$instance = null;
+				return null;
 			}
 		}else{
-			$instance = null;
+			return null;
 		}
 		return $instance;
 	}
