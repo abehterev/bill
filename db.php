@@ -85,7 +85,7 @@ class DB { /* Singleton */
 			return true;
 		}
 		catch(PDOException $e){
-			$error = Err::DB_PDO_ERR;
+			$error = Err::DB_PDO_CONN_ERR;
 			user_error( $e->getMessage() );
 			user_error( Err::Descr($error) );
 			return $error;
@@ -125,9 +125,38 @@ class DB { /* Singleton */
 
 /* PUBLIC SECTION */
 
-	public static function dbLoginExist($login){
+	/*
+	 * Check user exist in DB.
+	 * 
+	 *
+	 * BOOL dbLoginExist($login, [$id])
+	 *
+	 * RETURN:
+	 * 	TRUE or FALSE
+	 * 	if set second param return also USERID by link
+	 * ERROR:
+	 * 	if error then return ERR_CODE ( <0 )
+	 */
+
+	public static function dbLoginExist($login, &$id=null){
 		if ( self::dbInit( $err_buf ) ){
-			return true;
+			$instance = self::$db_instance;
+			try{
+				$result = $instance->mysql_link->query('SELECT id FROM users WHERE login="'.$login.'" LIMIT 1');
+				$result->setFetchMode(PDO::FETCH_ASSOC);
+				$find_count = $result->rowCount();
+				if ( $find_count > 0 ) {
+					$id = $result->fetch()['id'];
+					return true;
+				}else{
+					return false;
+				}
+			}catch(PDOException $e){
+				$error = Err::DB_PDO_QUERY_ERR;
+				user_error( $e->getMessage() );
+				user_error( Err::Descr($error) );
+				return $error;
+			}
 		}else{
 			user_error( Err::Descr($err_buf) );
 			return $err_buf;
@@ -136,8 +165,11 @@ class DB { /* Singleton */
 	}
 }
 
-if ( ($res = DB::dbLoginExist("testuser")) > 0 ){
-	print "exist\n";
+
+/* TEST SECTION */
+
+if ( ($res = DB::dbLoginExist("testuser", $user_id)) >= 0 ){
+	( $res ) ? print "exist (userid: $user_id)\n" : print "not exist\n";
 }else{
 	$error = $res;
 	print "[dbLoginExist] Error: " . Err::Descr($error) . "\n";
