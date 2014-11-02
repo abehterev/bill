@@ -15,6 +15,9 @@ class DB { /* Singleton */
 	private $password;
 
 /* CONSTRUCT */
+	private function __clone(){} /* protect clone() */
+	private function __wakeup(){} /* protect wakeup() serialize */
+
 	/*
 	 * 	NOTE: PRIVATE CONSTRUCT
 	 *	$db = new DB($login, $password, $database, [$host, $port]) 
@@ -81,9 +84,9 @@ class DB { /* Singleton */
 			$this->mysql_link = new PDO('mysql:host='.$this->host.';port='.$this->port.';dbname='.$this->database.';charset=utf8',
 				$this->login, $this->password);
 			$this->mysql_link->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
-			$this->mysql_link->setAttribute(PDO::ATTR_EMULATE_PREPARES, false); // Disable prepared statement emulation layer
-			$this->mysql_link->setAttribute(PDO::MYSQL_ATTR_DIRECT_QUERY, false); // same
-			$this->mysql_link->setAttribute(PDO::ATTR_STRINGIFY_FETCHES, false); // send correct types from sql server
+			$this->mysql_link->setAttribute(PDO::ATTR_EMULATE_PREPARES, false); /* Disable prepared statement emulation layer */
+			$this->mysql_link->setAttribute(PDO::MYSQL_ATTR_DIRECT_QUERY, false); /* same */
+			$this->mysql_link->setAttribute(PDO::ATTR_STRINGIFY_FETCHES, false); /* send correct types from sql server */
 			return true;
 		}
 		catch(PDOException $e){
