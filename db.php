@@ -6,6 +6,8 @@ class DB { /* Singleton */
 	private static $db_instance = null;
 	private static $jsonConfigFile = "db.json";
 
+	private $mysql_link;
+
 	private $host;
 	private $port;
 	private $database;
@@ -74,11 +76,49 @@ class DB { /* Singleton */
 		}
 	}
 
+	private function dbConnect(){
+		try {
+			$this->mysql_link = new PDO('mysql:host='.$this->host.';port='.$this->port.';dbname='.$this->database.'',
+				$this->login, $this->password);
+			$this->mysql_link->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+			$this->mysql_link->exec("set names utf8");
+			return true;
+		}
+		catch(PDOException $e){
+			$error = Err::DB_PDO_ERR;
+			user_error( $e->getMessage() );
+			user_error( Err::Descr($error) );
+			return $error;
+		}
+
+	/* MySQL connect old method
+		if( $this->mysql_link = mysql_connect($this->host, $this->login, $this->password) ) {
+			if ( mysql_select_db($this->database) ){
+				return true;
+			}else{
+				$error = Err::DB_CANNOT_USE_DATABASE;
+				user_error( Err::Descr($error) );
+				return $error;
+			}
+		}else{
+			$error = Err::DB_CANNOT_CONNECT;
+			user_error( Err::Descr($error) );
+			return $error;
+		}
+	*/
+
+	}
+
 	private static function dbInit(&$err_buf){
 		if ( self::$db_instance === null ) {
 			if ( !self::readConfigFromJSON(self::$jsonConfigFile, $err_buf) ){
 				return null;
-			};
+			}else{
+				$instance = self::$db_instance;
+				if ( !( ($err_buf = $instance->dbConnect()) > 0) ) {
+					return null;
+				}
+			}
 		}
 		return self::$db_instance;
 	}
@@ -90,7 +130,7 @@ class DB { /* Singleton */
 			return true;
 		}else{
 			user_error( Err::Descr($err_buf) );
-			return $error;
+			return $err_buf;
 		}
 
 	}

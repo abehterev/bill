@@ -18,6 +18,9 @@ class Err
 	const DB_JSON_READ_ERR = -103;
 	const DB_JSON_PARSE_ERR = -104;
 	const DB_DATABASE_NOT_SET = -105;
+	const DB_CANNOT_CONNECT = -106;
+	const DB_CANNOT_USE_DATABASE = -107;
+	const DB_PDO_ERR = -108;
 
 	const ERR_UNKNOWN = -65535;
 
@@ -37,6 +40,9 @@ class Err
 		self::DB_JSON_READ_ERR => "DB: JSON config file read error.",
 		self::DB_JSON_PARSE_ERR => "DB: JSON config file parse error.",
 		self::DB_DATABASE_NOT_SET => "DB: Database name not set.",
+		self::DB_CANNOT_CONNECT => "DB: Cannot connect to the mysql server.",
+		self::DB_CANNOT_USE_DATABASE => "DB: Cannot use database.",
+		self::DB_PDO_ERR => "DB: PDO connect database error.",
 
 
 		self::ERR_UNKNOWN => "Error code unknown.",
