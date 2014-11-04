@@ -19,10 +19,11 @@ class User {
 	private $db_id;
 	private $login;
 	private $password;
+	private $hash_password;
 
 /* CONSTRUCTOR/DESTRUCTOR SECTION */
 
-	function __construct() {
+	private function __construct() {
 		#print "Создаем пустой класс ". get_class($this). "\n";
 	}
 
@@ -93,26 +94,56 @@ class User {
 		}
 
 		$this->password = $password;
+		$this->hash_password = hash('sha256', $password);
 		return true;
 	}
 
 	protected function saveToDb(){
-		print "-> Save user ".$this->login." with password [".$this->password."] to DB\n";
+		if ( $err = DB::dbUserSave($this) ){
+			return true;
+		}else{
+			user_error( Err::Descr($err) );
+			return $err;
+		}
+
 	}
 
 /* PUBLIC SECTION */
+	public function getLogin(){
+		return (string) $this->login;
+	}
+
+	public function getHashPassword(){
+		return (string) $this->hash_password;
+	}
+
+	public function setDbId($id){
+		$this->db_id = (int) $id;
+		return true;
+	}
 
 	public static function createNewLogin($login, $password, &$err_buf) {
 		$instance = new self();
 		if ( ($err_buf = $instance->setLogin($login)) > 0 ) {
 			if ( ($err_buf = $instance->setPassword($password)) > 0 ){
-				$instance->saveToDb();
+				if ( ($err_buf = $instance->saveToDb()) <= 0 ){
+					unset($instance);
+					return null;
+				}
 			}else{
+				unset($instance);
 				return null;
 			}
 		}else{
+			unset($instance);
 			return null;
 		}
+		return $instance;
+	}
+
+	public static function createByLogin($login, &$err_buf) {
+		$instance = new self();
+		
 		return $instance;
 	}
 }

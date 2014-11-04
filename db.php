@@ -172,6 +172,26 @@ class DB { /* Singleton */
 		}
 
 	}
+
+	public static function dbUserSave(&$user){
+		if ( self::dbInit( $err_buf ) ){
+			$instance = self::$db_instance;
+			try{
+				$stmt = $instance->mysql_link->prepare("INSERT INTO users (login,password) VALUES(?,?)");
+				$stmt->execute( [$user->getLogin(), $user->getHashPassword()] );
+				$user->setDbId( $instance->mysql_link->lastInsertId() );
+				return true;
+			}catch(PDOException $e){
+				$error = Err::DB_PDO_QUERY_ERR;
+				user_error( $e->getMessage() );
+				user_error( Err::Descr($error) );
+				return $error;
+			}
+		}else{
+			user_error( Err::Descr($err_buf) );
+			return $err_buf;
+		}
+	}
 }
 
 
