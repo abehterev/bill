@@ -141,10 +141,17 @@ class User {
 		return $instance;
 	}
 
-	public static function createByLogin($login, &$err_buf) {
+	public static function getByLogin($login, &$err_buf) {
 		$instance = new self();
 		
 		return $instance;
+	}
+	
+	public static function getById($id, &$err_buf) {
+		$instance = new self();
+		
+		return $instance;
+	  
 	}
 }
 
