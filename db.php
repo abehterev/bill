@@ -207,14 +207,13 @@ class DB { /* Singleton */
 			$instance = self::$db_instance;
 			if ( ($res = self::dbLoginExist($login,$id)) > 0 ){
 				try{
-					$stmt = $instance->mysql_link->prepare("SELECT * FROM users WHERE id=? LIMIT 1");
+					$stmt = $instance->mysql_link->prepare("SELECT * FROM users WHERE id=? AND enable=TRUE LIMIT 1");
 					$stmt->bindValue(1, $id, PDO::PARAM_INT);
 					$stmt->execute();
 					$stmt->setFetchMode(PDO::FETCH_ASSOC);
 					$count = $stmt->rowCount();
 					if ( $count > 0 ) {
 						$r_fetch = $stmt->fetch();
-						var_dump($r_fetch);
 						$user->loadFromArray($r_fetch);
 						return true;
 					}else{
