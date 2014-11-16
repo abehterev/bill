@@ -122,6 +122,17 @@ class User {
 		return true;
 	}
 
+	public function loadFromArray($a){
+	/*
+	 * Function load Object params from associative array ($a).
+	 * Need for DB module.
+	 */
+		$this->db_id = (int) $a['id'];
+		$this->login = (string) $a['login'];
+		$this->hash_password = (string) $a['password'];
+		$this->password = null;
+	}
+
 	public static function createNewLogin($login, $password, &$err_buf) {
 		$instance = new self();
 		if ( ($err_buf = $instance->setLogin($login)) > 0 ) {
@@ -143,16 +154,13 @@ class User {
 
 	public static function getByLogin($login, &$err_buf) {
 		$instance = new self();
-		
+		if ( ($err_buf = DB::dbUserLoad($login, $instance)) <= 0 ){
+			unset($instance);
+			return null;
+		}
 		return $instance;
 	}
 	
-	public static function getById($id, &$err_buf) {
-		$instance = new self();
-		
-		return $instance;
-	  
-	}
 }
 
 

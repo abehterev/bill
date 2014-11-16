@@ -192,6 +192,41 @@ class DB { /* Singleton */
 			return $err_buf;
 		}
 	}
+
+	public static function dbUserLoad($login, &$user){
+		if ( self::dbInit( $err_buf ) ){
+			$instance = self::$db_instance;
+			if ( !(($res = self::dbLoginExist($login,$id)) >= 0) ){
+				try{
+					$stmt = $instance->mysql_link->prepare("SELECT FROM users WHERE id=? LIMIT 1");
+					$stmt->bindValue(1, $id, PDO::PARAM_INT);
+					$stmt->execute();
+					$stmt->setFetchMode(PDO::FETCH_ASSOC);
+					$count = $stmt->rowCount();
+					if ( $count > 0 ) {
+						$user->loadFromArray($stmt->fetch());
+						return true;
+					}else{
+						$error = Err::DB_USER_NOT_FOUND;
+						user_error( Err::Descr($error) );
+						return $error;
+					}
+				}catch(PDOException $e){
+					$error = Err::DB_PDO_QUERY_ERR;
+					user_error( $e->getMessage() );
+					user_error( Err::Descr($error) );
+					return $error;
+				}
+			}else{
+				$error = $res;
+				user_error( Err::Descr($error) );
+				return $error;
+			}
+		}else{
+			user_error( Err::Descr($err_buf) );
+			return $err_buf;
+		}
+	}
 }
 
 

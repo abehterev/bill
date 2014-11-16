@@ -20,6 +20,7 @@ class Err
 	const DB_DATABASE_NOT_SET = -105;
 	const DB_CANNOT_CONNECT = -106;
 	const DB_CANNOT_USE_DATABASE = -107;
+	const DB_USER_NOT_FOUND = -108;
 	const DB_PDO_CONN_ERR = -110;
 	const DB_PDO_QUERY_ERR = -111;
 
@@ -43,6 +44,7 @@ class Err
 		self::DB_DATABASE_NOT_SET => "DB: Database name not set.",
 		self::DB_CANNOT_CONNECT => "DB: Cannot connect to the mysql server.",
 		self::DB_CANNOT_USE_DATABASE => "DB: Cannot use database.",
+		self::DB_USER_NOT_FOUND => "DB: User not found.",
 		self::DB_PDO_CONN_ERR => "DB: PDO connect database error.",
 		self::DB_PDO_QUERY_ERR => "DB: PDO database query error.",
 
