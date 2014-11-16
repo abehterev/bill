@@ -46,19 +46,19 @@ class User {
 		$login = (string)$login;
 
 		if ( $login === "" ){
-			$err = Err::LOGIN_EMPTY;
+			$err = Err::USER_LOGIN_EMPTY;
 			user_error( Err::Descr($err) );
 			return $err;
 		}
 
 		if ( strlen($login) > 20 ) {
-			$err = Err::LOGIN_TOO_LONG;
+			$err = Err::USER_LOGIN_TOO_LONG;
 			user_error( Err::Descr($err) );
 			return $err;
 		}
 
 		if ( ! self::isLoginValid($login) ) {
-			$err = Err::LOGIN_NOT_VALID;
+			$err = Err::USER_LOGIN_NOT_VALID;
 			user_error( Err::Descr($err) );
 			return $err;
 		}
@@ -82,13 +82,13 @@ class User {
 		$password = (string)$password;
 
 		if ( $password === "" ){
-			$err = Err::PASSWORD_EMPTY;
+			$err = Err::USER_PASSWORD_EMPTY;
 			user_error( Err::Descr($err) );
 			return $err;
 		}
 
 		if ( strlen($password) <= 6 ) {
-			$err = Err::PASSWORD_TOO_SHORT;
+			$err = Err::USER_PASSWORD_TOO_SHORT;
 			user_error( Err::Descr($err) );
 			return $err;
 		}
