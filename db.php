@@ -217,7 +217,7 @@ class DB { /* Singleton */
 						$user->loadFromArray($r_fetch);
 						return true;
 					}else{
-						$error = Err::DB_USER_NOT_FOUND;
+						$error = Err::DB_USER_NOT_FOUND; // OR DISABLED
 						user_error( Err::Descr($error) );
 						return $error;
 					}
@@ -228,7 +228,11 @@ class DB { /* Singleton */
 					return $error;
 				}
 			}else{
-				$error = $res;
+				if ( $res < 0 ){
+					$error = $res;
+				}else{
+					$error = Err::DB_USER_NOT_FOUND;
+				}
 				user_error( Err::Descr($error) );
 				return $error;
 			}
