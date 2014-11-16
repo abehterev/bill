@@ -29,15 +29,6 @@ class User {
 
 /* PROTECTED SECTION */
 
-	private static function isLoginFree($login){
-		if ( ($res = DB::dbLoginExist($login)) >= 0 ){
-			return ! $res;
-		}else{
-			$error = $res;
-			return $error;
-		}
-	}
-
 	private static function isLoginValid($login){
 		return ( preg_match('/^[a-zA-Z0-9]+$/', $login) ? true : false );
 	}
@@ -63,7 +54,7 @@ class User {
 			return $err;
 		}
 
-		if ( ($res = self::isLoginFree($login)) > 0 ) {
+		if ( ($res = DB::dbLoginNotExist($login)) > 0 ) {
 			$this->login = $login;
 			return true;
 		}else{
