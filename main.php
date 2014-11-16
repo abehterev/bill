@@ -56,21 +56,31 @@ if ( $user5 = User::createNewLogin("testuser9","password", $err_buf) ) {
 }
 
 /* test #6
-	Get Invalid User 
+	Create Valid User 
 */
-print(">> [6] Get Invalid User\n");
-if ( $user6 = User::getByLogin("testuser999", $err_buf) ) {
+print(">> [6] Create Dup of Valid User\n");
+if ( $user6 = User::createNewLogin("testuser9","password", $err_buf) ) {
 	var_dump($user6);
 }else{
 	print "Error: " . Err::Descr($err_buf) . "\n";
 }
 
 /* test #7
+	Get Invalid User 
+*/
+print(">> [7] Get Invalid User\n");
+if ( $user7 = User::getByLogin("testuser999", $err_buf) ) {
+	var_dump($user7);
+}else{
+	print "Error: " . Err::Descr($err_buf) . "\n";
+}
+
+/* test #8
 	Get Valid User 
 */
-print(">> [7] Get Valid User\n");
-if ( $user7 = User::getByLogin("testuser9", $err_buf) ) {
-	var_dump($user7);
+print(">> [8] Get Valid User\n");
+if ( $user8 = User::getByLogin("testuser9", $err_buf) ) {
+	var_dump($user8);
 }else{
 	print "Error: " . Err::Descr($err_buf) . "\n";
 }
