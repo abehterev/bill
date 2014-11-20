@@ -5,10 +5,12 @@ require_once("err.php");
 
 /* TDD */
 
+$t = 0;
+
 /* test #1
 	create login more 20 symbols
 */
-print(">> [1] create login more 20 symbols\n");
+print("\n>> [". $t++ ."] create login more 20 symbols\n");
 if ( $user1 = User::createNewLogin("loginMoreThanTwentySymbols","some-pass2", $err_buf) ) {
 	var_dump($user1);
 }else{
@@ -18,7 +20,7 @@ if ( $user1 = User::createNewLogin("loginMoreThanTwentySymbols","some-pass2", $e
 /* test #2
 	create empty login
 */
-print(">> [2] create empty login\n");
+print("\n>> [". $t++ ."] create empty login\n");
 if ( $user2 = User::createNewLogin("","pass2", $err_buf) ) {
 	var_dump($user2);
 }else{
@@ -28,7 +30,7 @@ if ( $user2 = User::createNewLogin("","pass2", $err_buf) ) {
 /* test #3
 	create empty password
 */
-print(">> [3] create empty password\n");
+print("\n>> [". $t++ ."] create empty password\n");
 if ( $user3 = User::createNewLogin("login3","", $err_buf) ) {
 	var_dump($user3);
 }else{
@@ -38,7 +40,7 @@ if ( $user3 = User::createNewLogin("login3","", $err_buf) ) {
 /* test #4
 	create trash login
 */
-print(">> [4] create trash login\n");
+print("\n>> [". $t++ ."] create trash login\n");
 if ( $user4 = User::createNewLogin("login_@!CanBe#","", $err_buf) ) {
 	var_dump($user4);
 }else{
@@ -48,7 +50,7 @@ if ( $user4 = User::createNewLogin("login_@!CanBe#","", $err_buf) ) {
 /* test #5
 	Create Valid User 
 */
-print(">> [5] Create Valid User\n");
+print("\n>> [". $t++ ."] Create Valid User\n");
 if ( $user5 = User::createNewLogin("testuser9","password", $err_buf) ) {
 	var_dump($user5);
 }else{
@@ -58,7 +60,7 @@ if ( $user5 = User::createNewLogin("testuser9","password", $err_buf) ) {
 /* test #6
 	Create Valid User 
 */
-print(">> [6] Create Dup of Valid User\n");
+print("\n>> [". $t++ ."] Create Dup of Valid User\n");
 if ( $user6 = User::createNewLogin("testuser9","password", $err_buf) ) {
 	var_dump($user6);
 }else{
@@ -68,7 +70,7 @@ if ( $user6 = User::createNewLogin("testuser9","password", $err_buf) ) {
 /* test #7
 	Get Invalid User 
 */
-print(">> [7] Get Invalid User\n");
+print("\n>> [". $t++ ."] Get Invalid User\n");
 if ( $user7 = User::getByLogin("testuser999", $err_buf) ) {
 	var_dump($user7);
 }else{
@@ -78,8 +80,8 @@ if ( $user7 = User::getByLogin("testuser999", $err_buf) ) {
 /* test #8
 	Get Valid User 
 */
-print(">> [8] Get Valid User\n");
-if ( $user8 = User::getByLogin("testuser9", $err_buf) ) {
+print("\n>> [". $t++ ."] Get Valid User\n");
+if ( $user8 = User::getByLogin("us233656er", $err_buf) ) {
 	var_dump($user8);
 }else{
 	print "Error: " . Err::Descr($err_buf) . "\n";
