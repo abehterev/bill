@@ -144,11 +144,16 @@ class User {
 	}
 
 	public static function getByLogin($login, &$err_buf) {
-		$instance = new self();
-		if ( ($err_buf = DB::dbUserLoad($login, $instance)) <= 0 ){
-			unset($instance);
+		
+		if ( ($err_buf = DB::dbUserLoad($login, $a)) <= 0 ){
 			return null;
 		}
+		
+		$instance = new self();
+		$instance->db_id = (int) $a['id'];
+		$instance->login = (string) $a['login'];
+		$instance->hash_password = (string) $a['password'];
+		$instance->password = null;
 		return $instance;
 	}
 	

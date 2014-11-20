@@ -202,7 +202,8 @@ class DB { /* Singleton */
 		}
 	}
 
-	public static function dbUserLoad($login, &$user){
+	public static function dbUserLoad($login, &$a){
+		$a = null;
 		if ( self::dbInit( $err_buf ) ){
 			$instance = self::$db_instance;
 			if ( ($res = self::dbLoginExist($login,$id)) > 0 ){
@@ -213,8 +214,7 @@ class DB { /* Singleton */
 					$stmt->setFetchMode(PDO::FETCH_ASSOC);
 					$count = $stmt->rowCount();
 					if ( $count > 0 ) {
-						$r_fetch = $stmt->fetch();
-						$user->loadFromArray($r_fetch);
+						$a = $stmt->fetch();
 						return true;
 					}else{
 						$error = Err::DB_USER_NOT_FOUND; // OR DISABLED
